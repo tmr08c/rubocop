@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require 'debugger'
 module RuboCop
   module Cop
     module Lint
@@ -21,7 +22,14 @@ module RuboCop
             next if special_keyword?(final_node)
             next unless LITERALS.include?(final_node.type)
 
-            add_offense(final_node, :expression)
+            add_offense(node, :expression)
+          end
+        end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            debugger
+            p node
           end
         end
 

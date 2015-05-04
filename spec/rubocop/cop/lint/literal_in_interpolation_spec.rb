@@ -16,6 +16,11 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
       expect(cop.offenses.size).to eq(1)
     end
 
+    it "removes interpolation around #{literal}" do
+      corrected = autocorrect_source(cop, %("this is the \#{#{literal}}"))
+      expect(corrected).to eq("this is the #{literal}")
+    end
+
     it "registers an offense only for final #{literal} in interpolation" do
       inspect_source(cop, %("this is the \#{#{literal};#{literal}}"))
       expect(cop.offenses.size).to eq(1)
