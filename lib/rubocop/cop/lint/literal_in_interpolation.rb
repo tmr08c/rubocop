@@ -28,8 +28,15 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            debugger
-            p node
+            # debugger
+            node.children.each_with_object('') do |child, string|
+              if child.str_type?
+                string << child.loc.expression.source
+              else
+                string << child.loc.expression.source[/#\{(.*)\}/, 1]
+              end
+            end
+            puts string
           end
         end
 

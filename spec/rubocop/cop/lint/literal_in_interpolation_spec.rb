@@ -21,6 +21,21 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
       expect(corrected).to eq("this is the #{literal}")
     end
 
+    it "removes interpolation around #{literal} when there is more text" do
+      corrected = autocorrect_source(cop, %("this is the \#{#{literal}} literally"))
+      expect(corrected).to eq("this is the #{literal} literally")
+    end
+
+    it "removes interpolation around multiple #{literal}" do
+      corrected = autocorrect_source(cop, %("this is the \#{#{literal}} with \#{#{literal}} now"))
+      expect(corrected).to eq("this is the #{literal} with #{literal} now")
+    end
+
+    it "removes interpolation around #{literal} and leave real interpolation" do
+      corrected = autocorrect_source(cop, %("this is the \#{#{literal}} with \#{a} now"))
+      expect(corrected).to eq("this is the #{literal} with \#{a} now")
+    end
+
     it "registers an offense only for final #{literal} in interpolation" do
       inspect_source(cop, %("this is the \#{#{literal};#{literal}}"))
       expect(cop.offenses.size).to eq(1)
