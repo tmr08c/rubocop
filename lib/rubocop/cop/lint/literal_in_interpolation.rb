@@ -17,10 +17,13 @@ module RuboCop
 
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|
-            final_node = begin_node.children.last
-            next unless final_node
-            next if special_keyword?(final_node)
-            next unless LITERALS.include?(final_node.type)
+#           final_node = begin_node.children.last
+#           next unless final_node
+#           next if special_keyword?(final_node)
+#           next unless LITERALS.include?(final_node.type)
+
+
+            next unless  violates?(node)
 
             add_offense(node, :expression)
           end
@@ -28,24 +31,40 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            # debugger
-            node.children.each_with_object('') do |child, string|
-              if child.str_type?
-                string << child.loc.expression.source
-              else
-                string << child.loc.expression.source[/#\{(.*)\}/, 1]
-              end
-            end
-            puts string
+            corrector.replace(node.loc.expression, autocorrected_string(node))
           end
         end
 
         private
 
+        def violates?(node)
+          final_node = node.children.last
+
+          violator = true
+          viloator = false unless final_node
+          viloator = false if special_keyword?(final_node)
+          violator = false unless LITERALS.include?(final_node.type)
+
+          puts "Violator: #{violator}"
+          violator
+        end
+
         def special_keyword?(node)
           # handle strings like __FILE__
           (node.type == :str && !node.loc.respond_to?(:begin)) ||
             node.loc.expression.is?('__LINE__')
+        end
+
+        def autocorrected_string(node)
+          node.children.each_with_object('') do |child, string|
+            source = child.loc.expression.source
+
+            string << (foo?(child) ? source : source[/#\{(.*)\}/, 1])
+          end
+        end
+
+        def foo?(node)
+          node.str_type? || !LITERALS.include?(node.children.last.type)
         end
       end
     end
