@@ -2,8 +2,19 @@
 
 ## master (unreleased)
 
+### Changes
+
+* Prefer `SpaceInsideBlockBraces` to `SpaceBeforeSemicolon` and `SpaceAfterSemicolon` to avoid an infinite loop when auto-correcting. ([@lumeet][])
+
+### Bugs fixed
+
+* Don't count required keyword args when specifying `CountKeywordArgs: false` for `ParameterLists`. ([@sumeet][])
+
+## 0.31.0 (05/05/2015)
+
 ### New features
 
+* `Rails/TimeZone` emits acceptable methods on a violation when `EnforcedStyle` is `:acceptable`. ([@l8nite][])
 * Recognize rackup file (config.ru) out of the box. ([@carhartl][])
 * [#1788](https://github.com/bbatsov/rubocop/pull/1788): New cop `ModuleLength` checks for overly long module definitions. ([@sdeframond][])
 * New cop `Performance/Count` to convert `Enumerable#select...size`, `Enumerable#reject...size`, `Enumerable#select...count`, `Enumerable#reject...count` `Enumerable#select...length`, and `Enumerable#reject...length` to `Enumerable#count`. ([@rrosenblum][])
@@ -28,6 +39,7 @@
 * Fix bug in `MultilineTernaryOperator` where it will not register an offense when only the false branch is on a separate line. ([@rrosenblum][])
 * Fix crash in `MultilineBlockLayout` when using new lambda literal syntax without parentheses. ([@hbd225][])
 * [#1859](https://github.com/bbatsov/rubocop/pull/1859): Fix bugs in `IfUnlessModifier` concerning comments and empty lines. ([@jonas054][])
+* Fix handling of trailing comma in `SpaceAroundBlockParameters` and `SpaceAfterComma`. ([@lumeet][])
 
 ## 0.30.1 (21/04/2015)
 
@@ -1388,3 +1400,5 @@
 [@dylandavidson]: https://github.com/dylandavidson
 [@tmr08c]: https://github.com/tmr08c
 [@hbd225]: https://github.com/hbd225
+[@l8nite]: https://github.com/l8nite
+[@sumeet]: https://github.com/sumeet
