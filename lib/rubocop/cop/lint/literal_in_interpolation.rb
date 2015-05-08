@@ -32,12 +32,11 @@ module RuboCop
         private
 
         def violator?(node)
-          violates = true
-          violates= false unless node
-          violates = false if special_keyword?(node)
-          violates = false unless LITERALS.include?(node.type)
+          return false unless node
+          return false if special_keyword?(node)
+          return false unless LITERALS.include?(node.type)
 
-          violates
+          true
         end
 
         def special_keyword?(node)
@@ -50,12 +49,15 @@ module RuboCop
           node.children.each_with_object('') do |child, string|
             source = child.loc.expression.source
 
-            # foo => violator?
-            string << (foo?(child) ? source : source[/#\{(.*)\}/, 1])
+            if keep_interpolation? child
+              string << source
+            else
+              string << source[/#\{(.*)\}/, 1]
+            end
           end
         end
 
-        def foo?(node)
+        def keep_interpolation?(node)
           node.str_type? || !LITERALS.include?(node.children.last.type)
         end
       end
