@@ -17,7 +17,7 @@ module RuboCop
 
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|
-           final_node = begin_node.children.last
+            final_node = begin_node.children.last
 
             add_offense(node, :expression) if violator?(final_node)
           end

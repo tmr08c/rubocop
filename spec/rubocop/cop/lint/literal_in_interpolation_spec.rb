@@ -28,9 +28,9 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
     end
 
     it "removes interpolation around multiple #{literal}" do
-       corrected =
-         autocorrect_source(cop,
-                            %("some \#{#{literal}} with \#{#{literal}} too"))
+      corrected =
+        autocorrect_source(cop,
+                           %("some \#{#{literal}} with \#{#{literal}} too"))
       expect(corrected).to eq("some #{literal} with #{literal} too")
     end
 
@@ -67,10 +67,9 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
     end
 
     it "does not try to autocrrect strings like #{keyword}" do
-      corrected=
-        autocorrect_source(cop, %("this is the \#{#{keyword}} silly"))
+      corrected = autocorrect_source(cop, %("this is the \#{#{keyword}} silly"))
 
-      expect(corrected).to eq (%("this is the \#{#{keyword}} silly"))
+      expect(corrected).to eq(%("this is the \#{#{keyword}} silly"))
     end
 
     it "registers an offense for interpolation after #{keyword}" do
