@@ -17,15 +17,9 @@ module RuboCop
 
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|
-#           final_node = begin_node.children.last
-#           next unless final_node
-#           next if special_keyword?(final_node)
-#           next unless LITERALS.include?(final_node.type)
+           final_node = begin_node.children.last
 
-
-            next unless  violates?(node)
-
-            add_offense(node, :expression)
+            add_offense(node, :expression) if violator?(final_node)
           end
         end
 
@@ -37,16 +31,13 @@ module RuboCop
 
         private
 
-        def violates?(node)
-          final_node = node.children.last
+        def violator?(node)
+          violates = true
+          violates= false unless node
+          violates = false if special_keyword?(node)
+          violates = false unless LITERALS.include?(node.type)
 
-          violator = true
-          viloator = false unless final_node
-          viloator = false if special_keyword?(final_node)
-          violator = false unless LITERALS.include?(final_node.type)
-
-          puts "Violator: #{violator}"
-          violator
+          violates
         end
 
         def special_keyword?(node)
@@ -59,6 +50,7 @@ module RuboCop
           node.children.each_with_object('') do |child, string|
             source = child.loc.expression.source
 
+            # foo => violator?
             string << (foo?(child) ? source : source[/#\{(.*)\}/, 1])
           end
         end

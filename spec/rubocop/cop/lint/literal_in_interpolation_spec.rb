@@ -62,6 +62,13 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
       expect(cop.offenses).to be_empty
     end
 
+    it "does not try to autocrrect strings like #{keyword}" do
+      corrected=
+        autocorrect_source(cop, %("this is \#{#{keyword}} silly"))
+
+      expect(corrected).to eq ("this is the \##{keyword}} silly")
+    end
+
     it "registers an offense for interpolation after #{keyword}" do
       inspect_source(cop, %("this is the \#{#{keyword}} \#{1}"))
       expect(cop.offenses.size).to eq(1)
