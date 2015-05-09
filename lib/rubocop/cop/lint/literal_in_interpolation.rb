@@ -27,7 +27,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(node.loc.expression, autocorrected_string(node))
+            corrector.replace(node.loc.expression, %("#{autocorrected_string(node)}"))
           end
         end
 
@@ -40,7 +40,7 @@ module RuboCop
         end
 
         def autocorrected_string(node)
-          node.children.each_with_object('') do |child, string|
+          node.children.each_with_object("") do |child, string|
             source = child.loc.expression.source
 
             if keep_interpolation? child
