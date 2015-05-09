@@ -34,10 +34,22 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
       expect(corrected).to eq("some #{literal} with #{literal} too")
     end
 
-    it "removes interpolation around #{literal} and leave real interpolation" do
-      corrected =
-        autocorrect_source(cop, %("this is the \#{#{literal}} with \#{a} now"))
-      expect(corrected).to eq("this is the #{literal} with \#{a} now")
+    context 'when there is real and literal interpolation' do
+      context 'when literal interpolation is before real interpolation' do
+        it 'only remove interpolation around literal' do
+          corrected =
+            autocorrect_source(cop, %("this is \#{#{literal}} with \#{a} now"))
+          expect(corrected).to eq("this is #{literal} with \#{a} now")
+        end
+      end
+
+      context 'when literal interpolation is after real interpolation' do
+        it 'only remove interpolation around literal' do
+          corrected =
+            autocorrect_source(cop, %("this is \#{a} with \#{#{literal}} now"))
+          expect(corrected).to eq("this is \#{a} with #{literal} now")
+        end
+      end
     end
 
     it "registers an offense only for final #{literal} in interpolation" do

@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-require 'debugger'
 module RuboCop
   module Cop
     module Lint
@@ -18,8 +17,11 @@ module RuboCop
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|
             final_node = begin_node.children.last
+            next unless final_node
+            next if special_keyword?(final_node)
+            next unless LITERALS.include?(final_node.type)
 
-            add_offense(node, :expression) if violator?(final_node)
+            add_offense(node, :expression)
           end
         end
 
@@ -30,14 +32,6 @@ module RuboCop
         end
 
         private
-
-        def violator?(node)
-          return false unless node
-          return false if special_keyword?(node)
-          return false unless LITERALS.include?(node.type)
-
-          true
-        end
 
         def special_keyword?(node)
           # handle strings like __FILE__
